@@ -4,15 +4,12 @@ const { getAllCategories,getDetailCategories,createCategories,updateCategories,d
 // buat function create
 const create = async (req, res, next) => {
   try {
-		// membuat categories baru menggunakan data dari `name`
-    const { name } = req.body;
-
 		// simpan Category yang baru dibuat ke MongoDB
-    const result = await createCategories(name);
-
+    const result = await createCategories(req);
 		// berikan response kepada client dengan mengembalikan product yang baru dibuat
     res.status(201).json({
       data: result,
+      message: "data berhasil ditambahkan"
     });
   } catch (err) {
 		// jika terjadi kesalahan kemudian gunakan method `next` agar Express memproses error tersebut
@@ -45,10 +42,9 @@ const index = async (req, res, next) => {
 
 const find = async (req, res, next) => {
   try {
-    const { id } = req.params;
 
 		// mencari categories di MongoDB berdasarkan field _id
-    const result = await getDetailCategories(id);
+    const result = await getDetailCategories(req);
  
     // bila result tidak mendapatkan data categories maka akan mereturn response `message: 'Id categories tidak ditemukan'`
     if (!result) {
@@ -57,6 +53,7 @@ const find = async (req, res, next) => {
 
     res.status(200).json({
       data: result,
+      message : "data berhasil ditemukan"
     });
   } catch (err) {
     next(err);
@@ -65,18 +62,13 @@ const find = async (req, res, next) => {
 
 const update = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const { name } = req.body;
 
     // cari dan update categories berdasarkan field _id
-    const result = await updateCategories(id,name)
-    if (!result) {
-      return result.status(404).json({
-        message : "tidak bisa diupdate"
-      })
-    }
+    const result = await updateCategories(req)
+   
     res.status(200).json({
       data: result,
+      message: 'data berhasil diupdate'
     });
   } catch (err) {
     next(err);
@@ -84,13 +76,13 @@ const update = async (req, res, next) => {
 };
 
 const destroy = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    
+  try {    
     // cari dan hapus categories berdasakan field _id
-    const result = await deleteCategories(id)
+
+    const result = await deleteCategories(req)
     res.status(200).json({
       data: result,
+      message : 'data berhasil dihapus'
     });
   } catch (err) {
     next(err);
