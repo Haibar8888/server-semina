@@ -1,10 +1,13 @@
-const express = require("express");
+const express = require('express');
 const router = express();
 
-router.get("/categories", (req, res) => {
-  res.status(202).json({
-    message: "halaman categories",
-  });
-});
+// import controller
+const { create, index, find, update, destroy } = require('./controller');
 
-module.exports = router;
+router.get('/categories', index);
+router.get('/categories/:id', find);
+router.put('/categories/:id', update);   
+router.delete('/categories/:id', destroy);   
+router.post('/categories', create);
+
+module.exports = router;    
