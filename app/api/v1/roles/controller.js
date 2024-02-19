@@ -1,59 +1,59 @@
 // import model category
-const Role = require('./model');
+const Role = require("./model");
+const { getAllRole } = require("../../../services/mongoose/role");
 
 // buat function create
 const create = async (req, res, next) => {
   try {
-		// membuat role baru menggunakan data dari `name`
+    // membuat role baru menggunakan data dari `name`
     const { name } = req.body;
 
-		// simpan Role yang baru dibuat ke MongoDB
+    // simpan Role yang baru dibuat ke MongoDB
     const result = await Role.create({ name });
 
-		// berikan response kepada client dengan mengembalikan product yang baru dibuat
+    // berikan response kepada client dengan mengembalikan product yang baru dibuat
     res.status(201).json({
       data: result,
-      message : "data berhasil ditambahkan"
+      message: "data berhasil ditambahkan",
     });
   } catch (err) {
-		// jika terjadi kesalahan kemudian gunakan method `next` agar Express memproses error tersebut
+    // jika terjadi kesalahan kemudian gunakan method `next` agar Express memproses error tersebut
     next(err);
   }
 };
 
-const index = async (req, res, next) => { 
-    try {
+const index = async (req, res, next) => {
+  try {
+    // const result = await Role.find();
 
-        const result = await Role.find()
+    const result = await getAllRole();
 
-        if (result.length < 0) {
-             res.status(500).json({
-                data: result,
-                message: 'data kosong'
-            })  
-        }
+    // if (result.length < 0) {
+    //   res.status(500).json({
+    //     data: result,
+    //     message: "data kosong",
+    //   });
+    // }
 
-        res.status(200).json({
-          data: result,
-          message: 'data berhasil ditampilkan'
-        })
-       
-    } catch (error) {
-        next(error);
-    }
-}
-
+    res.status(200).json({
+      data: result,
+      message: "data berhasil ditampilkan",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 const find = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-		// mencari categories di MongoDB berdasarkan field _id
+    // mencari categories di MongoDB berdasarkan field _id
     const result = await Role.findOne({ _id: id });
- 
+
     // bila result tidak mendapatkan data categories maka akan mereturn response `message: 'Id categories tidak ditemukan'`
     if (!result) {
-      return res.status(404).json({ message: 'Id role tidak ditemukan' });
+      return res.status(404).json({ message: "Id role tidak ditemukan" });
     }
 
     res.status(200).json({
@@ -77,8 +77,8 @@ const update = async (req, res, next) => {
     );
     if (!result) {
       return result.status(404).json({
-        message : "tidak bisa diupdate"
-      })
+        message: "tidak bisa diupdate",
+      });
     }
     res.status(200).json({
       data: result,
@@ -91,7 +91,7 @@ const update = async (req, res, next) => {
 const destroy = async (req, res, next) => {
   try {
     const { id } = req.params;
-    
+
     // cari dan hapus categories berdasakan field _id
     const result = await Role.findOneAndDelete({ _id: id });
     res.status(200).json({
@@ -104,9 +104,9 @@ const destroy = async (req, res, next) => {
 
 // Export fungsi create pada controller categories
 module.exports = {
-    create,
-    index,
-    find,
-    update,
-    destroy,
+  create,
+  index,
+  find,
+  update,
+  destroy,
 };
