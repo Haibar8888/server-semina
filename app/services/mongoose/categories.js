@@ -4,8 +4,8 @@ const Categories = require("../../api/v1/categories/model");
 const { NotFoundError, BadRequestError } = require("../../errors");
 
 // get all categories
-const getAllCategories = async (req, res, next) => {
-  const result = await Categories.find();
+const getAllCategories = async (req) => {
+  const result = await Categories.find({ organizer: req.user.organizer });
 
   if (result.length == 0) throw new BadRequestError("data kosong");
 
@@ -15,7 +15,10 @@ const getAllCategories = async (req, res, next) => {
 const getDetailCategories = async (req) => {
   const { id } = req.params;
 
-  const result = await Categories.findOne({ _id: id });
+  const result = await Categories.findOne({
+    _id: id,
+    organizer: req.user.organizer,
+  });
 
   if (!result) throw new NotFoundError(`data id tidak ditemukan,${id}`);
 
@@ -26,12 +29,18 @@ const createCategories = async (req) => {
   const { name } = req.body;
 
   // cari categories dengan field name
-  const check = await Categories.findOne({ name });
+  const check = await Categories.findOne({
+    name,
+    organizer: req.user.organizer,
+  });
 
   // apa bila check true / data categories sudah ada maka kita tampilkan error bad request dengan message kategori nama duplikat
   if (check) throw new BadRequestError("kategori nama duplikat");
 
-  const result = await Categories.create({ name });
+  const result = await Categories.create({
+    name,
+    organizer: req.user.organizer,
+  });
 
   return result;
 };
@@ -64,7 +73,10 @@ const updateCategories = async (req) => {
 const deleteCategories = async (req) => {
   const { id } = req.params;
 
-  const result = await Categories.findOneAndDelete({ _id: id });
+  const result = await Categories.findOneAndDelete({
+    _id: id,
+    organizer: req.user.organizer,
+  });
 
   if (!result) throw new NotFoundError(`kategori id tidak ditemukan,${id}`);
 
@@ -72,7 +84,10 @@ const deleteCategories = async (req) => {
 };
 
 const checkingCategories = async (id) => {
-  const result = await Categories.findOne({ id: id });
+  const result = await Categories.findOne({
+    id: id,
+    organizer: req.user.organizer,
+  });
   if (result) throw new NotFoundError(`data category id tidak ditemukan,${id}`);
   return result;
 };

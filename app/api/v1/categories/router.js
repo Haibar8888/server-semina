@@ -1,13 +1,16 @@
-const express = require('express');
+const express = require("express");
 const router = express();
 
 // import controller
-const { create, index, find, update, destroy } = require('./controller');
+const { create, index, find, update, destroy } = require("./controller");
 
-router.get('/categories', index);
-router.get('/categories/:id', find);
-router.put('/categories/:id', update);   
-router.delete('/categories/:id', destroy);   
-router.post('/categories', create);
+// middleware user
+const { authenticatedUser } = require("../../../middleware/auth");
 
-module.exports = router;    
+router.get("/categories", authenticatedUser, index);
+router.get("/categories/:id", authenticatedUser, find);
+router.put("/categories/:id", authenticatedUser, update);
+router.delete("/categories/:id", authenticatedUser, destroy);
+router.post("/categories", authenticatedUser, create);
+
+module.exports = router;

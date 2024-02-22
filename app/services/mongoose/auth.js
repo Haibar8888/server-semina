@@ -4,6 +4,7 @@ const { createTokenUser, createJwt } = require("../../utils");
 
 const sigin = async (req) => {
   const { password, email } = req.body;
+
   if (!password || !email) {
     throw new BadRequestError("masukan email dan password yang benar");
   }
