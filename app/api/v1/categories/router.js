@@ -5,9 +5,17 @@ const router = express();
 const { create, index, find, update, destroy } = require("./controller");
 
 // middleware user
-const { authenticatedUser } = require("../../../middleware/auth");
+const {
+  authenticatedUser,
+  authorizeRoles,
+} = require("../../../middleware/auth");
 
-router.get("/categories", authenticatedUser, index);
+router.get(
+  "/categories",
+  authenticatedUser,
+  authorizeRoles("organizer"),
+  index
+);
 router.get("/categories/:id", authenticatedUser, find);
 router.put("/categories/:id", authenticatedUser, update);
 router.delete("/categories/:id", authenticatedUser, destroy);
